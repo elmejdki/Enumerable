@@ -133,6 +133,21 @@ module Enumerable
 
     count
   end
+
+  def my_map
+    if block_given?
+      arr = []
+      i = 0
+      while i < length
+        arr.push(yield(self[i]))
+        i += 1
+      end
+
+      arr
+    else
+      self.to_enum
+    end
+  end
 end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/MethodLength
@@ -140,6 +155,7 @@ end
 # rubocop:enable Metrics/PerceivedComplexity
 
 # %w[gogo toto boto].my_each { |x| puts x + "." }
+
 # puts %w[ant bear cat].my_all? { |word| word.length >= 3 }
 # puts [true, false, nil].my_all?
 # puts (1..10).my_all?{ |word| word >= 3 }
@@ -154,3 +170,6 @@ end
 # puts arr.count
 # puts arr.count(2)
 # puts arr.count{ |x| x % 2 == 0 }
+
+# print [1,2,3,4].my_map { |i| i*i }
+# puts ""
