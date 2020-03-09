@@ -4,19 +4,27 @@
 # rubocop:disable Metrics/PerceivedComplexity
 module Enumerable
   def my_each
-    for i in 0..length - 1 do
-      yield(self[i])
-    end
+    if block_given?
+      for i in 0..length - 1 do
+        yield(self[i])
+      end
 
-    self
+      self
+    else
+      self.to_enum
+    end
   end
 
   def my_each_with_index
-    for i in 0..length - 1 do
-      yield(self[i], i)
-    end
+    if block_given?
+      for i in 0..length - 1 do
+        yield(self[i], i)
+      end
 
-    self
+      self
+    else
+      self.to_enum
+    end
   end
 
   def my_select
