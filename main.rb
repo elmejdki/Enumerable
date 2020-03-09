@@ -27,10 +27,28 @@ module Enumerable
 
     arr
   end
+
+  def my_all?
+    if self.block_given?
+      i = 0
+      while i < length
+        return false if yield(self[i]).nil? || yield(self[i]) == false
+
+        i += 1
+      end
+    else
+      my_all? { |x| x }
+    end
+
+    true
+  end
 end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/MethodLength
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 
-%w[gogo toto boto].my_each { |x| puts x + "." }
+# %w[gogo toto boto].my_each { |x| puts x + "." }
+# puts %w[ant bear cat].all? { |word| word.length >= 3 }
+# puts [true, false, nil].all?
+# puts (1..10).all?{ |word| word >= 3 }
