@@ -10,6 +10,14 @@ module Enumerable
 
     self
   end
+
+  def my_each_with_index
+    for i in 0..length - 1 do
+      yield(self[i], i)
+    end
+
+    self
+  end
 end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/MethodLength
