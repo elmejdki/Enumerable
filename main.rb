@@ -29,7 +29,7 @@ module Enumerable
   end
 
   def my_all?(type = nil)
-    if self.block_given?
+    if block_given?
       i = 0
       while i < length
         return false if yield(self[i]).nil? || yield(self[i]) == false
@@ -52,8 +52,8 @@ module Enumerable
     true
   end
 
-  def my_any?
-    if self.block_given?
+  def my_any?(type = nil)
+    if block_given?
       i = 0
       while i < length
         return true if !yield(self[i]).nil? && yield(self[i]) != false
@@ -75,6 +75,30 @@ module Enumerable
 
     false
   end
+
+  def my_none?(type = nil)
+    if block_given?
+      i = 0
+      while i < length
+        return false if yield(self[i]) == true
+
+        i += 1
+      end
+    else
+      if type
+        i = 0
+        while i < length
+          return false if type === self[i]
+
+          i += 1
+        end
+      else
+        my_any? { |x| x }
+      end
+    end
+
+    true
+  end
 end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/MethodLength
@@ -82,10 +106,10 @@ end
 # rubocop:enable Metrics/PerceivedComplexity
 
 # %w[gogo toto boto].my_each { |x| puts x + "." }
-
-# puts %w[ant bear cat].all? { |word| word.length >= 3 }
-# puts [true, false, nil].all?
-# puts (1..10).all?{ |word| word >= 3 }
-# puts [].all?
-# puts %w[ant bear cat].any? { |word| word.length >= 4 }
-puts [].any?
+# puts %w[ant bear cat].my_all? { |word| word.length >= 3 }
+# puts [true, false, nil].my_all?
+# puts (1..10).my_all?{ |word| word >= 3 }
+# puts [].my_all?
+# puts %w[ant bear cat].my_any? { |word| word.length >= 4 }
+# puts [].my_any?
+# puts [1, 3.32, 42].my_none?(Float)
