@@ -148,6 +148,45 @@ module Enumerable
       self.to_enum
     end
   end
+
+  def my_inject(first = false, second = false)
+    memo = 0
+    if !block_given?
+      if first && second
+        memo = first
+        self.my_each { |item| memo = memo.method(second).call(item) }
+        memo
+      elsif first
+        memo = self[0]
+        self.my_each_with_index do |item, index|
+          if index == 0
+            next
+          else
+            memo = memo.method(second).call(item)
+          end
+        end
+
+        memo
+      end
+    else
+      if first
+        memo = first
+        self.my_each{ |item| memo = yield(memo, item) }
+        memo
+      else
+        memo = self[0]
+        self.my_each_with_index do |item, index|
+          if index == 0
+            next
+          else
+            memo = yield(memo, item)
+          end
+        end
+
+        memo
+      end
+    end
+  end
 end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/MethodLength
@@ -173,3 +212,16 @@ end
 
 # print [1,2,3,4].my_map { |i| i*i }
 # puts ""
+
+# test = [5,6,7,8,9,10].my_inject(1) do |product, n| 
+#   product * n
+# end
+
+# puts test
+
+# longest = %w{ cat sheep bear }.inject do |memo, word|
+#   memo.length > word.length ? memo : word
+# end
+# puts longest 
+
+# puts [5,6,7,8,9,10].inject { |sum, n| sum + n } 
