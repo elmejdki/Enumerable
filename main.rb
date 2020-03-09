@@ -21,11 +21,16 @@ module Enumerable
 
   def my_select
     arr = []
-    for i in 0..length - 1 do
-      arr.push(self[i]) if yield(self[i])
-    end
 
-    arr
+    if block_given?
+      for i in 0..length - 1 do
+        arr.push(self[i]) if yield(self[i])
+      end
+    
+      arr
+    else
+      self.to_enum
+    end
   end
 
   def my_all?(type = nil)
