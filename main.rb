@@ -134,19 +134,15 @@ module Enumerable
     count
   end
 
-  def my_map
-    if block_given?
-      arr = []
-      i = 0
-      while i < length
-        arr.push(yield(self[i]))
-        i += 1
-      end
-
-      arr
-    else
-      self.to_enum
+  def my_map(proc)
+    arr = []
+    i = 0
+    while i < length
+      arr.push(proc.call(self[i]))
+      i += 1
     end
+
+    arr
   end
 
   def my_inject(first = false, second = false)
@@ -162,7 +158,7 @@ module Enumerable
           if index == 0
             next
           else
-            memo = memo.method(second).call(item)
+            memo = memo.method(first).call(item)
           end
         end
 
@@ -193,6 +189,12 @@ end
 # rubocop:enable Metrics/CyclomaticComplexity
 # rubocop:enable Metrics/PerceivedComplexity
 
+def multiply(input)
+  input.my_inject(:*)
+end
+
+# puts multiply([2,4,5])
+
 # %w[gogo toto boto].my_each { |x| puts x + "." }
 
 # puts %w[ant bear cat].my_all? { |word| word.length >= 3 }
@@ -210,8 +212,10 @@ end
 # puts arr.count(2)
 # puts arr.count{ |x| x % 2 == 0 }
 
-# print [1,2,3,4].my_map { |i| i*i }
-# puts ""
+proc = Proc.new { |i| i*i }
+
+print [1,2,3,4].my_map(proc)
+puts ""
 
 # test = [5,6,7,8,9,10].my_inject(1) do |product, n| 
 #   product * n
