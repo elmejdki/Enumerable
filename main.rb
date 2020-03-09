@@ -18,6 +18,15 @@ module Enumerable
 
     self
   end
+
+  def my_select
+    arr = []
+    for i in 0..length - 1 do
+      arr.push(self[i]) if yield(self[i])
+    end
+
+    arr
+  end
 end
 # rubocop:enable Metrics/ModuleLength
 # rubocop:enable Metrics/MethodLength
