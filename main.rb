@@ -28,7 +28,7 @@ module Enumerable
     arr
   end
 
-  def my_all?
+  def my_all?(type = nil)
     if self.block_given?
       i = 0
       while i < length
@@ -37,10 +37,43 @@ module Enumerable
         i += 1
       end
     else
-      my_all? { |x| x }
+      if type
+        i = 0
+        while i < length
+          return false if !(type === self[i])
+
+          i += 1
+        end
+      else
+        my_all? { |x| x }
+      end
     end
 
     true
+  end
+
+  def my_any?
+    if self.block_given?
+      i = 0
+      while i < length
+        return true if !yield(self[i]).nil? && yield(self[i]) != false
+
+        i += 1
+      end
+    else
+      if type
+        i = 0
+        while i < length
+          return true if type === self[i]
+
+          i += 1
+        end
+      else
+        my_any? { |x| x }
+      end
+    end
+
+    false
   end
 end
 # rubocop:enable Metrics/ModuleLength
@@ -49,6 +82,10 @@ end
 # rubocop:enable Metrics/PerceivedComplexity
 
 # %w[gogo toto boto].my_each { |x| puts x + "." }
+
 # puts %w[ant bear cat].all? { |word| word.length >= 3 }
 # puts [true, false, nil].all?
 # puts (1..10).all?{ |word| word >= 3 }
+# puts [].all?
+# puts %w[ant bear cat].any? { |word| word.length >= 4 }
+puts [].any?
