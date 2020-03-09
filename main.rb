@@ -212,10 +212,10 @@ end
 # puts arr.count(2)
 # puts arr.count{ |x| x % 2 == 0 }
 
-proc = Proc.new { |i| i*i }
+# proc = Proc.new { |i| i*i }
 
-print [1,2,3,4].my_map(proc)
-puts ""
+# print [1,2,3,4].my_map(proc)
+# puts ""
 
 # test = [5,6,7,8,9,10].my_inject(1) do |product, n| 
 #   product * n
