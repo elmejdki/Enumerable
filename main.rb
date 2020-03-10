@@ -8,8 +8,10 @@ module Enumerable
 
   def my_each
     if block_given?
-      for i in 0..length - 1 do
+      i = 0
+      while i < length
         yield(self[i])
+        i += 1
       end
 
       self
@@ -20,8 +22,10 @@ module Enumerable
 
   def my_each_with_index
     if block_given?
-      for i in 0..length - 1 do
+      i = 0
+      while i < length
         yield(self[i], i)
+        i += 1
       end
 
       self
@@ -34,9 +38,7 @@ module Enumerable
     arr = []
 
     if block_given?
-      for i in 0..length - 1 do
-        arr.push(self[i]) if yield(self[i])
-      end
+      my_each { |item| arr.push(item) if yield(item) }
 
       arr
     else
@@ -46,19 +48,9 @@ module Enumerable
 
   def my_all?(type = nil)
     if block_given?
-      i = 0
-      while i < length
-        return false if yield(self[i]).nil? || yield(self[i]) == false
-
-        i += 1
-      end
+      my_each { |item| return false if yield(item).nil? || yield(item) == false }
     elsif type
-      i = 0
-      while i < length
-        return false unless type === self[i]
-
-        i += 1
-      end
+      my_each { |item| return false unless type === item }
     else
       return my_all? { |x| x }
     end
@@ -68,19 +60,9 @@ module Enumerable
 
   def my_any?(type = nil)
     if block_given?
-      i = 0
-      while i < length
-        return true if !yield(self[i]).nil? && yield(self[i]) != false
-
-        i += 1
-      end
+      my_each { |item| return true if !yield(item).nil? && yield(item) != false }
     elsif type
-      i = 0
-      while i < length
-        return true if type === self[i]
-
-        i += 1
-      end
+      my_each { |item| return true if type === item }
     else
       return my_any? { |x| x }
     end
@@ -90,19 +72,9 @@ module Enumerable
 
   def my_none?(type = nil)
     if block_given?
-      i = 0
-      while i < length
-        return false if yield(self[i])
-
-        i += 1
-      end
+      my_each { |item| return false if yield(item) }
     elsif type
-      i = 0
-      while i < length
-        return false if type === self[i]
-
-        i += 1
-      end
+      my_each { |item| return false if type === item }
     else
       return my_none? { |x| x }
     end
@@ -113,17 +85,9 @@ module Enumerable
   def my_count(item = false)
     count = 0
     if block_given?
-      i = 0
-      while i < length
-        count += 1 if yield(self[i])
-        i += 1
-      end
+      my_each { |ele| count += 1 if yield(ele) }
     elsif item
-      i = 0
-      while i < length
-        count += 1 if self[i] == item
-        i += 1
-      end
+      my_each { |ele| count += 1 if ele == item }
     else
       count = length
     end
@@ -163,7 +127,6 @@ module Enumerable
       if first && second
         memo = first
         arr.my_each { |item| memo = memo.method(second).call(item) }
-        memo
       elsif first
         memo = arr[0]
         arr.my_each_with_index do |item, index|
@@ -171,13 +134,10 @@ module Enumerable
 
           memo = memo.method(first).call(item)
         end
-
-        memo
       end
     elsif first
       memo = first
       arr.my_each { |item| memo = yield(memo, item) }
-      memo
     else
       memo = arr[0]
       arr.my_each_with_index do |item, index|
@@ -185,9 +145,9 @@ module Enumerable
 
         memo = yield(memo, item)
       end
-
-      memo
     end
+
+    memo
   end
 end
 # rubocop:enable Style/CaseEquality
