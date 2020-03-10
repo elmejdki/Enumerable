@@ -1,10 +1,11 @@
-# rubocop:disable Metrics/ModuleLength
-# rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/CyclomaticComplexity
-# rubocop:disable Metrics/PerceivedComplexity
 # rubocop:disable Style/CaseEquality
-# rubocop:disable Style/For
 module Enumerable
+  def make_array(input)
+    return input.to_a if input.class.name == 'Range'
+
+    input
+  end
+
   def my_each
     if block_given?
       for i in 0..length - 1 do
@@ -59,7 +60,7 @@ module Enumerable
         i += 1
       end
     else
-      my_all? { |x| x }
+      return my_all? { |x| x }
     end
 
     true
@@ -81,7 +82,7 @@ module Enumerable
         i += 1
       end
     else
-      my_any? { |x| x }
+      return my_any? { |x| x }
     end
 
     false
@@ -91,7 +92,7 @@ module Enumerable
     if block_given?
       i = 0
       while i < length
-        return false if yield(self[i]) == true
+        return false if yield(self[i])
 
         i += 1
       end
@@ -103,7 +104,7 @@ module Enumerable
         i += 1
       end
     else
-      my_any? { |x| x }
+      return my_none? { |x| x }
     end
 
     true
@@ -130,27 +131,42 @@ module Enumerable
     count
   end
 
-  def my_map(proc)
-    arr = []
-    i = 0
-    while i < length
-      arr.push(proc.call(self[i]))
-      i += 1
-    end
+  def my_map(proc = false)
+    if proc
+      arr = []
+      i = 0
+      while i < length
+        arr.push(proc.call(self[i]))
+        i += 1
+      end
 
-    arr
+      arr
+    elsif block_given?
+      arr = []
+      i = 0
+      while i < length
+        arr.push(yield(self[i]))
+        i += 1
+      end
+
+      arr
+    else
+      to_enum
+    end
   end
 
   def my_inject(first = false, second = false)
+    arr = make_array(self)
+
     memo = 0
     if !block_given?
       if first && second
         memo = first
-        my_each { |item| memo = memo.method(second).call(item) }
+        arr.my_each { |item| memo = memo.method(second).call(item) }
         memo
       elsif first
-        memo = self[0]
-        my_each_with_index do |item, index|
+        memo = arr[0]
+        arr.my_each_with_index do |item, index|
           next if index.zero?
 
           memo = memo.method(first).call(item)
@@ -160,11 +176,11 @@ module Enumerable
       end
     elsif first
       memo = first
-      my_each { |item| memo = yield(memo, item) }
+      arr.my_each { |item| memo = yield(memo, item) }
       memo
     else
-      memo = self[0]
-      my_each_with_index do |item, index|
+      memo = arr[0]
+      arr.my_each_with_index do |item, index|
         next if index.zero?
 
         memo = yield(memo, item)
@@ -174,50 +190,8 @@ module Enumerable
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength
-# rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/CyclomaticComplexity
-# rubocop:enable Metrics/PerceivedComplexity
 # rubocop:enable Style/CaseEquality
-# rubocop:enable Style/For
 
 def multiply(input)
   input.my_inject(:*)
 end
-
-# puts multiply([2,4,5])
-
-# %w[gogo toto boto].my_each { |x| puts x + "." }
-
-# puts %w[ant bear cat].my_all? { |word| word.length >= 3 }
-# puts [true, false, nil].my_all?
-# puts (1..10).my_all?{ |word| word >= 3 }
-# puts [].my_all?
-
-# puts %w[ant bear cat].my_any? { |word| word.length >= 4 }
-# puts [].my_any?
-
-# puts [1, 3.32, 42].my_none?(Float)
-
-# arr = [1,2,4,2]
-# puts arr.my_count
-# puts arr.my_count(2)
-# puts arr.my_count{ |x| x % 2 == 0 }
-
-# proc = Proc.new { |i| i*i }
-
-# print [1,2,3,4].my_map(proc)
-# puts ""
-
-# test = [5,6,7,8,9,10].my_inject(1) do |product, n|
-#   product * n
-# end
-
-# puts test
-
-# longest = %w{ cat sheep bear }.inject do |memo, word|
-#   memo.length > word.length ? memo : word
-# end
-# puts longest
-
-# puts [5,6,7,8,9,10].inject { |sum, n| sum + n }
