@@ -1,4 +1,5 @@
 # rubocop:disable Style/CaseEquality
+# rubocop:disable Metrics/ModuleLength
 module Enumerable
   def make_array(input)
     return input.to_a if input.class.name == 'Range'
@@ -119,6 +120,9 @@ module Enumerable
     end
   end
 
+  # rubocop:disable Metrics/CyclomaticComplexity
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/PerceivedComplexity
   def my_inject(first = false, second = false)
     arr = make_array(self)
 
@@ -149,8 +153,12 @@ module Enumerable
 
     memo
   end
+  # rubocop:enable Metrics/CyclomaticComplexity
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/PerceivedComplexity
 end
 # rubocop:enable Style/CaseEquality
+# rubocop:enable Metrics/ModuleLength
 
 def multiply(input)
   input.my_inject(:*)
