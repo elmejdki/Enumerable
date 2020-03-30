@@ -31,6 +31,20 @@ RSpec.describe Enumerable do
   end
 
   describe '#my_each_with_index' do
-    
+    let(:arr) { [1,2,3,4,5] }
+
+    it "Calls each element and the index and pass them to the block" do
+      result = []
+      arr.my_each_with_index{ |v, i| result << (v * i) }
+      expect(result).to eql([0, 2, 6, 12, 20])
+    end
+
+    it 'returns an enumerator if no block is given' do
+      expect(arr.my_each_with_index.class).to eql(Enumerator)
+    end
   end
+
+  # describe '#my_select' do
+  #   it ""
+  # end
 end
