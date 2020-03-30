@@ -1,10 +1,10 @@
 # rubocop:disable Style/CaseEquality
 # rubocop:disable Metrics/ModuleLength
 module Enumerable
-  def make_array(input)
-    return input.to_a if input.class.name == 'Range'
+  def make_array
+    return self.to_a if self.class.name == 'Range'
 
-    input
+    self
   end
 
   def my_each
@@ -124,7 +124,7 @@ module Enumerable
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/PerceivedComplexity
   def my_inject(first = false, second = false)
-    arr = make_array(self)
+    arr = self.make_array
 
     memo = 0
     if !block_given?
