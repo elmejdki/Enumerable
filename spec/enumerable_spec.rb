@@ -1,14 +1,14 @@
 require './main'
 
 RSpec.describe Enumerable do
-  describe '#make_array' do
+  context '#make_array' do
     it 'returns an array from a range' do
       range = (1..3)
       expect(range.make_array.class).to eql( Array )
     end
   end
 
-  describe '#my_each' do
+  context '#my_each' do
     let(:arr) { [1,2,3,4,5] }
 
     it 'returns the same array that it was given' do
@@ -30,7 +30,7 @@ RSpec.describe Enumerable do
     end
   end
 
-  describe '#my_each_with_index' do
+  context '#my_each_with_index' do
     let(:arr) { [1,2,3,4,5] }
 
     it "Calls each element and the index and pass them to the block" do
@@ -44,7 +44,7 @@ RSpec.describe Enumerable do
     end
   end
 
-  describe '#my_select' do
+  context '#my_select' do
     let(:arr) { [1,2,3,4,5] }
 
     it 'Returns the elements of the array wich evaluates to a given block to true' do      
@@ -54,9 +54,63 @@ RSpec.describe Enumerable do
     it 'returns Enum if there is no block' do      
       expect(arr.my_select.class).to eql(Enumerator)
     end
+
+    it 'returns a valid array from a range' do
+      expect((1..6).my_select { |v| v.even? }).to eql([2, 4, 6])
+    end
   end
 
-  # describe '#my_all?' do
-    
-  # end
+  context '#my_all?' do
+    it 'returns false when one of the values is false' do
+      expect([1, 2, 3, false, 7, 8].my_all?).to eql(false)
+    end
+
+    it 'return true if all the values evaluated to true' do
+      expect([1, 2, 3, 5, 7, 8].my_all?).to eql(true)
+    end
+
+    it 'returns false when one of the values is bigger than or equal to 4' do
+      expect((1..4).my_all? { |v| v >= 4 }).to eql(false)
+    end
+
+    it 'returns true if all the values are even' do
+      expect([2, 4, 6].my_all?{ |v| v.even?  }).to eql(true)
+    end
+  end
+
+  context '#my_any?' do
+    it 'returns false when all of the values are false' do
+      expect([false, false, false].my_any?).to eql(false)
+    end
+
+    it 'return true if one value evaluate to true' do
+      expect([false, false, 3].my_any?).to eql(true)
+    end
+
+    it 'return true if one number is even' do
+      expect((1..4).my_any? { |v| v.even? }).to eql(true)
+    end
+
+    it 'return false if all the values are not bigger than 0' do
+      expect([-2, -4, -6].my_any?{ |v| v >= 0  }).to eql(false)
+    end
+  end
+
+  context '#my_none?' do
+    it 'returns true when all of the values are false' do
+      expect([false, false, false].my_none?).to eql(true)
+    end
+
+    it 'return false if one value evaluate to true' do
+      expect([false, false, 3].my_none?).to eql(false)
+    end
+
+    it 'return false if one number is even' do
+      expect((1..4).my_none? { |v| v.even? }).to eql(false)
+    end
+
+    it 'return true if all the values are not bigger than 0' do
+      expect([-2, -4, -6].my_none?{ |v| v >= 0  }).to eql(true)
+    end
+  end
 end

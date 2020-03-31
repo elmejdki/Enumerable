@@ -8,28 +8,32 @@ module Enumerable
   end
 
   def my_each
+    arr = self.make_array
+
     if block_given?
       i = 0
-      while i < length
-        yield(self[i])
+      while i < arr.length
+        yield(arr[i])
         i += 1
       end
 
-      self
+      arr
     else
       to_enum
     end
   end
 
   def my_each_with_index
+    arr = self.make_array
+
     if block_given?
       i = 0
-      while i < length
-        yield(self[i], i)
+      while i < arr.length
+        yield(arr[i], i)
         i += 1
       end
 
-      self
+      arr
     else
       to_enum
     end
