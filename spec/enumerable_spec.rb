@@ -1,7 +1,7 @@
 require './main'
 
 RSpec.describe Enumerable do
-  let(:arr) { [1, 2, 3] }
+  let(:arr) { [1, 2, 3, 4, 5] }
   context '#make_array' do
     it 'returns an array from a range' do
       range = (1..3)
@@ -9,7 +9,6 @@ RSpec.describe Enumerable do
     end
   end
 
-  let(:arr) { [1, 2, 3, 4, 5] }
   context '#my_each' do
     it 'returns the same array that it was given' do
       expect(arr.my_each { |v| v + 3 }).to eql(arr)
@@ -44,15 +43,15 @@ RSpec.describe Enumerable do
 
   context '#my_select' do
     it 'Returns the elements of the array wich evaluates to a given block to true' do
-      expect(arr.my_select { |x| x.even? }).to eql([2,4])
+      expect(arr.my_select(&:even?)).to eql([2, 4])
     end
 
-    it 'returns Enum if there is no block' do      
+    it 'returns Enum if there is no block' do
       expect(arr.my_select.class).to eql(Enumerator)
     end
 
     it 'returns a valid array from a range' do
-      expect((1..6).my_select { |v| v.even? }).to eql([2, 4, 6])
+      expect((1..6).my_select(&:even?)).to eql([2, 4, 6])
     end
   end
 
@@ -70,7 +69,7 @@ RSpec.describe Enumerable do
     end
 
     it 'returns true if all the values are even' do
-      expect([2, 4, 6].my_all?{ |v| v.even?  }).to eql(true)
+      expect([2, 4, 6].my_all?(&:even?)).to eql(true)
     end
   end
 
@@ -84,11 +83,11 @@ RSpec.describe Enumerable do
     end
 
     it 'return true if one number is even' do
-      expect((1..4).my_any? { |v| v.even? }).to eql(true)
+      expect((1..4).my_any?(&:even?)).to eql(true)
     end
 
     it 'return false if all the values are not bigger than 0' do
-      expect([-2, -4, -6].my_any?{ |v| v >= 0  }).to eql(false)
+      expect([-2, -4, -6].my_any? { |v| v >= 0 }).to eql(false)
     end
   end
 
@@ -102,36 +101,36 @@ RSpec.describe Enumerable do
     end
 
     it 'return false if one number is even' do
-      expect((1..4).my_none? { |v| v.even? }).to eql(false)
+      expect((1..4).my_none?(&:even?)).to eql(false)
     end
 
     it 'return true if all the values are not bigger than 0' do
-      expect([-2, -4, -6].my_none?{ |v| v >= 0  }).to eql(true)
+      expect([-2, -4, -6].my_none? { |v| v >= 0 }).to eql(true)
     end
   end
 
   context '#my_count' do
-    it 'Returns the count of each element that yield true after evaluation' do     
-      expect(arr.my_count{ |x| x > 2 }).to eql(1)
+    it 'Returns the count of each element that yield true after evaluation' do
+      expect(arr.my_count { |x| x > 2 }).to eql(3)
     end
 
-    it 'Returns the count of items that are equal to the element given' do      
+    it 'Returns the count of items that are equal to the element given' do
       expect(arr.my_count(2)).to eql(1)
     end
 
     it 'Count the number of elements in the array' do
-      expect(arr.my_count).to eql(3)
+      expect(arr.my_count).to eql(5)
     end
   end
 
-  context '#my_map' do    
+  context '#my_map' do
     it 'Returns a new array with the sum of two for each element' do
-      expect(arr.my_map{ |x| x + 2 }).to eql([3, 4, 5])
+      expect(arr.my_map { |x| x + 2 }).to eql([3, 4, 5, 6, 7])
     end
 
     it 'return a new array multiplying the original by 2' do
-      proc = Proc.new { |v| v * 2 }
-      expect(arr.my_map(proc)).to eql([2, 4, 6])
+      proc = proc { |v| v * 2 }
+      expect(arr.my_map(proc)).to eql([2, 4, 6, 8, 10])
     end
 
     it 'return an enumerator if no block or proc is given' do
@@ -140,13 +139,13 @@ RSpec.describe Enumerable do
   end
 
   context '#my_inject' do
-    let(:range) { (5..10) } 
+    let(:range) { (5..10) }
     it 'return the sum of values inside the range' do
       expect(range.my_inject { |sum, n| sum + n }).to eql(45)
     end
 
     it 'return the multiplication of values inside the range with an initial value of 1' do
-      expect(range.my_inject(1) { |product, n| product * n }).to eql(151200)
+      expect(range.my_inject(1) { |product, n| product * n }).to eql(151_200)
     end
 
     it 'return the sum of the array with a symbol' do
