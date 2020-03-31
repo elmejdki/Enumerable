@@ -1,35 +1,39 @@
 # rubocop:disable Style/CaseEquality
 # rubocop:disable Metrics/ModuleLength
 module Enumerable
-  def make_array(input)
-    return input.to_a if input.class.name == 'Range'
+  def make_array
+    return to_a if self.class.name == 'Range'
 
-    input
+    self
   end
 
   def my_each
+    arr = make_array
+
     if block_given?
       i = 0
-      while i < length
-        yield(self[i])
+      while i < arr.length
+        yield(arr[i])
         i += 1
       end
 
-      self
+      arr
     else
       to_enum
     end
   end
 
   def my_each_with_index
+    arr = make_array
+
     if block_given?
       i = 0
-      while i < length
-        yield(self[i], i)
+      while i < arr.length
+        yield(arr[i], i)
         i += 1
       end
 
-      self
+      arr
     else
       to_enum
     end
@@ -124,7 +128,7 @@ module Enumerable
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/PerceivedComplexity
   def my_inject(first = false, second = false)
-    arr = make_array(self)
+    arr = make_array
 
     memo = 0
     if !block_given?
