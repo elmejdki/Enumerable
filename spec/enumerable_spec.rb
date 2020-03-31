@@ -1,6 +1,7 @@
 require './main'
 
 RSpec.describe Enumerable do
+  let(:arr) { [1,2,3] }
   context '#make_array' do
     it 'returns an array from a range' do
       range = (1..3)
@@ -112,5 +113,25 @@ RSpec.describe Enumerable do
     it 'return true if all the values are not bigger than 0' do
       expect([-2, -4, -6].my_none?{ |v| v >= 0  }).to eql(true)
     end
+  end
+
+  context '#my_count' do
+    it 'Returns the count of each element that yield true after evaluation' do     
+      expect(arr.my_count{ |x| x > 2 }).to eql(1)
+    end
+
+    it 'Returns the count of items that are equal to the element given' do      
+      expect(arr.my_count(2)).to eql(1)
+    end
+
+    it 'Count the number of elements in the array' do
+      expect(arr.my_count).to eql(3)
+    end
+  end
+
+  context '#my_map' do    
+    it 'Returns a new array with the sum of two for each element' do
+      expect(arr.my_map{ |x| x + 2 }).to eql([3, 4, 5])
+    end  
   end
 end
