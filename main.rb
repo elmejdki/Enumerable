@@ -2,13 +2,13 @@
 # rubocop:disable Metrics/ModuleLength
 module Enumerable
   def make_array
-    return self.to_a if self.class.name == 'Range'
+    return to_a if self.class.name == 'Range'
 
     self
   end
 
   def my_each
-    arr = self.make_array
+    arr = make_array
 
     if block_given?
       i = 0
@@ -24,7 +24,7 @@ module Enumerable
   end
 
   def my_each_with_index
-    arr = self.make_array
+    arr = make_array
 
     if block_given?
       i = 0
@@ -128,7 +128,7 @@ module Enumerable
   # rubocop:disable Metrics/MethodLength
   # rubocop:disable Metrics/PerceivedComplexity
   def my_inject(first = false, second = false)
-    arr = self.make_array
+    arr = make_array
 
     memo = 0
     if !block_given?

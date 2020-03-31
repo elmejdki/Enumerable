@@ -1,19 +1,18 @@
 require './main'
 
 RSpec.describe Enumerable do
-  let(:arr) { [1,2,3] }
+  let(:arr) { [1, 2, 3] }
   context '#make_array' do
     it 'returns an array from a range' do
       range = (1..3)
-      expect(range.make_array.class).to eql( Array )
+      expect(range.make_array.class).to eql(Array)
     end
   end
 
+  let(:arr) { [1, 2, 3, 4, 5] }
   context '#my_each' do
-    let(:arr) { [1,2,3,4,5] }
-
     it 'returns the same array that it was given' do
-      expect(arr.my_each{ |v| v + 3 }).to eql(arr)
+      expect(arr.my_each { |v| v + 3 }).to eql(arr)
     end
 
     it 'make sure the block is called for each element' do
@@ -32,11 +31,9 @@ RSpec.describe Enumerable do
   end
 
   context '#my_each_with_index' do
-    let(:arr) { [1,2,3,4,5] }
-
-    it "Calls each element and the index and pass them to the block" do
+    it 'Calls each element and the index and pass them to the block' do
       result = []
-      arr.my_each_with_index{ |v, i| result << (v * i) }
+      arr.my_each_with_index { |v, i| result << (v * i) }
       expect(result).to eql([0, 2, 6, 12, 20])
     end
 
@@ -46,10 +43,8 @@ RSpec.describe Enumerable do
   end
 
   context '#my_select' do
-    let(:arr) { [1,2,3,4,5] }
-
-    it 'Returns the elements of the array wich evaluates to a given block to true' do      
-      expect(arr.my_select{ |x| x.even? }).to eql([2,4])
+    it 'Returns the elements of the array wich evaluates to a given block to true' do
+      expect(arr.my_select { |x| x.even? }).to eql([2,4])
     end
 
     it 'returns Enum if there is no block' do      
