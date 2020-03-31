@@ -46,8 +46,17 @@ RSpec.describe Enumerable do
 
   describe '#my_select' do
     let(:arr) { [1,2,3,4,5] }
+
     it 'Returns the elements of the array wich evaluates to a given block to true' do      
       expect(arr.my_select{ |x| x.even? }).to eql([2,4])
     end
+
+    it 'returns Enum if there is no block' do      
+      expect(arr.my_select.class).to eql(Enumerator)
+    end
   end
+
+  # describe '#my_all?' do
+    
+  # end
 end
