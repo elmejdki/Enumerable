@@ -132,6 +132,34 @@ RSpec.describe Enumerable do
   context '#my_map' do    
     it 'Returns a new array with the sum of two for each element' do
       expect(arr.my_map{ |x| x + 2 }).to eql([3, 4, 5])
-    end  
+    end
+
+    it 'return a new array multiplying the original by 2' do
+      proc = Proc.new { |v| v * 2 }
+      expect(arr.my_map(proc)).to eql([2, 4, 6])
+    end
+
+    it 'return an enumerator if no block or proc is given' do
+      expect(arr.my_map.class).to eql(Enumerator)
+    end
+  end
+
+  context '#my_inject' do
+    let(:range) { (5..10) } 
+    it 'return the sum of values inside the range' do
+      expect(range.my_inject { |sum, n| sum + n }).to eql(45)
+    end
+
+    it 'return the multiplication of values inside the range with an initial value of 1' do
+      expect(range.my_inject(1) { |product, n| product * n }).to eql(151200)
+    end
+
+    it 'return the sum of the array with a symbol' do
+      expect(range.my_inject(:+)).to eql(45)
+    end
+
+    it 'return the sum of the array with a symbol and an initial value of 3' do
+      expect(range.my_inject(3, :+)).to eql(48)
+    end
   end
 end
